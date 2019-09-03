@@ -1,3 +1,6 @@
+from queue import PriorityQueue
+
+
 def where(arrangement, student):
     for i in range(len(arrangement)):
         for j in range(len(arrangement[i])):
@@ -6,11 +9,40 @@ def where(arrangement, student):
     return dict({'e': 1})
 
 
+def get_row_major(arrangement):
+
+    row_major = []
+
+    for i in range(len(arrangement)):
+        for j in range(len(arrangement[0])):
+            row_major.append(arrangement[i][j])
+
+    return row_major
+
+
+def output_state(state):
+
+    for student in state:
+        print(student, end=" ")
+    print()
+
+
 def print_table(arrangement):
     for i in range(len(arrangement)):
         for j in range(len(arrangement[i])):
             print(arrangement[i][j], end=" ")
     print()
+
+
+def hamming_distance(new_state, original):
+
+    distance = 0
+
+    for i in range(len(new_state)):
+        if new_state[i] != original[i]:
+            distance = distance + 1
+
+    return distance
 
 
 def is_move_valid(player1, player2, rows, columns):
@@ -39,6 +71,8 @@ def simulate():
         # Input
         rows, columns, queries = map(int, input().split())
         students = input().split()
+        pq = PriorityQueue()
+        states = []
         # Making a dictionary
         arrangement = [[students[row*columns + col] for col in range(columns)] for row in range(rows)]
 
@@ -51,11 +85,28 @@ def simulate():
             student2 = where(arrangement, student2)
             # print("Student 2", student2)
             if is_move_valid(student1, student2, rows, columns):
+
                 arrangement[student1['x']][student1['y']] = student2['student']
                 arrangement[student2['x']][student2['y']] = student1['student']
-                print_table(arrangement)
-            else:
-                print("illegal")
+
+                new_state = get_row_major(arrangement)
+                distance = hamming_distance(students, new_state)
+
+                flag = False
+
+                for temp in states:
+                    if temp == new_state:
+                        flag = True
+                        break
+
+                if not flag:
+                    pq.put((distance, new_state))
+
+        while not pq.empty():
+            val = pq.get()
+            # val = heapq.heappop(states)
+            # output_state(val[1])
+            print(val)
 
 
 simulate()
