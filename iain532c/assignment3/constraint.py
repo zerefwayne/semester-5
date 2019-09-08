@@ -48,6 +48,30 @@ def are_constraints_resolved(arrangement, constraints):
     return True
 
 
+def is_swap_valid(swaps, max_swaps):
+
+    count = {}
+
+    for swap in swaps:
+        if swap[0] in count:
+            count[swap[0]] += 1
+        else:
+            count[swap[0]] = 1
+        if count[swap[0]] > max_swaps:
+            # print(count)
+            return False
+
+        if swap[1] in count:
+            count[swap[1]] += 1
+        else:
+            count[swap[1]] = 1
+        if count[swap[1]] > max_swaps:
+            # print(count)
+            return False
+
+    return True
+
+
 def one_to_two(students, rows, columns):
     arrangement = [[students[row * columns + col] for col in range(columns)] for row in range(rows)]
     return arrangement
@@ -71,7 +95,7 @@ def one_to_string(students):
     return line
 
 
-def search(original_arrangement, constraints, rows, cols):
+def search(original_arrangement, constraints, max_swaps, rows, cols):
     visited = {}
     nodes = []
     flag = 0
@@ -96,11 +120,13 @@ def search(original_arrangement, constraints, rows, cols):
                     else:
                         new_node.swaps.append((arrangement[i][j+1], arrangement[i][j]))
 
-                    if are_constraints_resolved(arrangement.copy(), constraints):
-                        print_answer(new_node.swaps.copy())
-                        return
+                    if is_swap_valid(new_node.swaps, max_swaps):
 
-                    heappush(nodes, new_node)
+                        if are_constraints_resolved(arrangement.copy(), constraints):
+                            print_answer(new_node.swaps.copy())
+                            return
+
+                        heappush(nodes, new_node)
 
                 arrangement[i][j], arrangement[i][j + 1] = arrangement[i][j + 1], arrangement[i][j]
 
@@ -115,12 +141,14 @@ def search(original_arrangement, constraints, rows, cols):
                 else:
                     new_node.swaps.append((arrangement[i+1][0], arrangement[i][0]))
 
-                if are_constraints_resolved(arrangement.copy(), constraints):
-                    print_answer(new_node.swaps.copy())
-                    return
+                if is_swap_valid(new_node.swaps, max_swaps):
 
-                # print(new_node.depth, *new_node.arrangement, new_node.swaps)
-                heappush(nodes, new_node)
+                    if are_constraints_resolved(arrangement.copy(), constraints):
+                        print_answer(new_node.swaps.copy())
+                        return
+
+                    heappush(nodes, new_node)
+
             arrangement[i][0], arrangement[i + 1][0] = arrangement[i + 1][0], arrangement[i][0]
 
         for i in range(rows - 1):
@@ -135,12 +163,14 @@ def search(original_arrangement, constraints, rows, cols):
                 else:
                     new_node.swaps.append((arrangement[i+1][cols-1], arrangement[i][cols-1]))
 
-                if are_constraints_resolved(arrangement.copy(), constraints):
-                    print_answer(new_node.swaps.copy())
-                    return
+                if is_swap_valid(new_node.swaps, max_swaps):
 
-                # print(new_node.depth, *new_node.arrangement, new_node.swaps)
-                heappush(nodes, new_node)
+                    if are_constraints_resolved(arrangement.copy(), constraints):
+                        print_answer(new_node.swaps.copy())
+                        return
+
+                    heappush(nodes, new_node)
+
             arrangement[i][cols - 1], arrangement[i + 1][cols - 1] = arrangement[i + 1][cols - 1], arrangement[i][
                 cols - 1]
 
@@ -148,14 +178,14 @@ def search(original_arrangement, constraints, rows, cols):
 def main():
     test_cases = int(input())
     for _ in range(test_cases):
-        rows, columns = map(int, input().split())
+        rows, columns, max_swaps = map(int, input().split())
         original_arrangement = input().split()
         constraints_no = int(input())
         constraints = []
         for _ in range(constraints_no):
             first, second = input().split()
             constraints.append((first, second))
-        search(original_arrangement[:], constraints, rows, columns)
+        search(original_arrangement[:], constraints, max_swaps, rows, columns)
 
 
 main()
