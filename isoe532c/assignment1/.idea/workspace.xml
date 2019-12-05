@@ -3,7 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="d2afd5da-0b70-4e3a-9629-a4fba20cda83" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../Hello/src/Iterative.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/assignment1.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../test/src/Hello.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../test/test.iml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,7 +25,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Hello" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -44,6 +50,7 @@
       <option name="presentableId" value="Default" />
       <updated>1569487834532</updated>
       <workItem from="1569487835809" duration="16000" />
+      <workItem from="1569491394968" duration="6000" />
     </task>
     <servers />
   </component>
@@ -55,7 +62,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

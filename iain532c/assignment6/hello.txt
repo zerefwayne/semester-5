@@ -1,0 +1,17 @@
+1
+2
+IIT5a
+5
+A1 Fac1 6
+B1 Fac2 6
+C1 Fac3 6
+D1 Fac4 6
+E1 Fac5 6
+IIT5b
+5
+A2 Fac1 6
+B2 Fac2 6
+C2 Fac3 6
+D2 Fac4 6
+E2 Fac5 6
+

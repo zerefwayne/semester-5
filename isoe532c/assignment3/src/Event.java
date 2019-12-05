@@ -35,7 +35,7 @@ public class Event {
             data[count][0] = rs.getString("eventsID");
             data[count][1] = rs.getString("name");
             data[count][2] = rs.getString("pType");
-            data[count][3] = rs.getString("numT");
+            data[count][3] = rs.getString("num");
             data[count][4] = rs.getString("batchT");
             int j1ID = rs.getInt("j1s");
             int j2ID = rs.getInt("j2s");
@@ -72,7 +72,7 @@ public class Event {
 
     public static void addEventDatabase(Connection finalConn, String evID, String name, String perftype, String num, String batch, int j1id, int j2id, int j3id) throws SQLException {
         PreparedStatement insertCata = finalConn.prepareStatement
-                ("INSERT INTO assignment3.events (eventsID, name,pType , numT, batchT,j1s,j2s,j3s) VALUES (?, ?, ?, ?, ?,?,?,?)");
+                ("INSERT INTO assignment3.events (eventsID, name,pType , num, batchT,j1s,j2s,j3s) VALUES (?, ?, ?, ?, ?,?,?,?)");
 
         insertCata.setString(1, evID);
         insertCata.setString(2,name);

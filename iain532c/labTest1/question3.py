@@ -36,15 +36,20 @@ def is_valid(next_node, visited):
     if query not in visited:
         return True
     else:
-        if next_node.g != visited[query].g:
-            if next_node.g < visited[query].g:
+        if next_node.t != visited[query].t:
+            if next_node.t < visited[query].t:
                 visited[query] = next_node
                 return True
-        elif next_node.actions != visited[query].actions:
-            if len(next_node.actions) != len(visited[query].actions):
-                return len(next_node.actions) < len(visited[query].actions)
-            else:
-                return next_node.actions < visited[query].actions
+        else:
+            if next_node.g != visited[query].g:
+                if next_node.g < visited[query].g:
+                    visited[query] = next_node
+                    return True
+            elif next_node.actions != visited[query].actions:
+                if len(next_node.actions) != len(visited[query].actions):
+                    return len(next_node.actions) < len(visited[query].actions)
+                else:
+                    return next_node.actions < visited[query].actions
 
     return False
 

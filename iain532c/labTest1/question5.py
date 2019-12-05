@@ -3,13 +3,13 @@ from heapq import heappush, heappop
 
 
 class Node:
-    def __init__(self, location, history, actions, f=inf, g=inf, h=inf, t=0):
-        self.location = location
-        self.history = history
+    def __init__(self, location_1, location_2, history_1, history_2, actions, f=inf, t=0):
+        self.location_1 = location_1
+        self.location_2 = location_2
+        self.history_1 = history_1
+        self.history_2 = history_2
         self.actions = actions
         self.f = f
-        self.g = g
-        self.h = h
         self.t = t
 
     def __lt__(self, other):
@@ -18,33 +18,27 @@ class Node:
         else:
             return self.actions < other.actions
 
-
     def print_history(self):
-        print(self.g)
-        for loc in self.history:
-            print(loc[0], loc[1])
+        print(self.f)
+        for loc in range(len(self.history_1)):
+            print(self.history_1[loc][0], self.history_1[loc][1], self.history_2[loc][0], self.history_2[loc][1])
 
 
-def in_bounds(next_node, grid, rows, cols):
-    return 0 <= next_node[0] < rows and 0 <= next_node[1] < cols and grid[next_node[0]][next_node[1]] != 0
+def in_bounds(next_node, rows, cols):
+    return 0 <= next_node[0] < rows and 0 <= next_node[1] < cols
 
 
 def is_valid(next_node, visited):
 
-    query = str(next_node.location[0]) + "," + str(next_node.location[1]) + "," + str(next_node.t)
+    query = str(next_node.location_1[0]) + "," + str(next_node.location_1[1]) + "," + str(next_node.location_2[0]) + "," + str(next_node.location_2[1]) + "," + str(next_node.t)
 
     if query not in visited:
         return True
     else:
-        if next_node.g != visited[query].g:
-            if next_node.g < visited[query].g:
+        if next_node.f != visited[query].f:
+            if next_node.f < visited[query].f:
                 visited[query] = next_node
                 return True
-        elif next_node.actions != visited[query].actions:
-            if len(next_node.actions) != len(visited[query].actions):
-                return len(next_node.actions) < len(visited[query].actions)
-            else:
-                return next_node.actions < visited[query].actions
 
     return False
 
@@ -61,13 +55,14 @@ def calculate_heuristic(current, foods):
     return min_distance
 
 
-def a_star_food(source, grid, diff_height, rows, cols, foods):
+def a_star_food(player1, player2, grid, diff_height, rows, cols):
 
     nodes = []
 
-    init_history = [source]
+    history_1 = [player1]
+    history_2 = [player2]
 
-    heappush(nodes, Node(source, init_history[:], [], 0, 0, 0, 0))
+    heappush(nodes, Node(player1, player2, history_1[:], history_2[:], [], 0, 0))
 
     visited = dict({})
 
@@ -82,57 +77,84 @@ def a_star_food(source, grid, diff_height, rows, cols, foods):
     while len(nodes) > 0:
         current = heappop(nodes)
 
-        x = current.location[0]
-        y = current.location[1]
+        # print(current.location_1, current.location_2, current.f, current.actions, current.t)
+
+        x1 = current.location_1[0]
+        y1 = current.location_1[1]
+        x2 = current.location_2[0]
+        y2 = current.location_2[1]
 
         t = current.t
 
-        if grid[x][y] < 0:
+        if current.location_1[0] == current.location_2[0] and current.location_1[1] == current.location_2[1]:
             current.print_history()
             return
 
         actions = current.actions[:]
-        history = current.history[:]
 
-        current_height = abs(grid[x][y]) + (t % diff_height[x][y])
+        history_1 = current.history_1[:]
+        history_2 = current.history_2[:]
 
-        visited[str(x)+","+str(y)+","+str(t)] = current
+        current_height_1 = abs(grid[x1][y1]) + (t % diff_height[x1][y1])
+        current_height_2 = abs(grid[x2][y2]) + (t % diff_height[x2][y2])
 
-        for movement in movements:
+        tummy = str(x1)+","+str(y1)+","+str(x2)+","+str(y2)+","+str(t)
 
-            next_node = (x + movement[0], y + movement[1])
+        visited[tummy] = current
 
-            new_actions = actions[:]
-            new_history = history[:]
+        for movement_1 in movements:
 
-            if not in_bounds(next_node, grid, rows, cols):
+            next_node_1 = (x1 + movement_1[0], y1 + movement_1[1])
+
+            if not in_bounds(next_node_1, rows, cols):
                 continue
 
-            next_node_height = abs(grid[next_node[0]][next_node[1]]) + ((t+1) % diff_height[next_node[0]][next_node[1]])
+            next_node_height_1 = abs(grid[next_node_1[0]][next_node_1[1]]) + (
+                        (t + 1) % diff_height[next_node_1[0]][next_node_1[1]])
 
-            cost_to_move = 1
+            for movement_2 in movements:
 
-            if current_height > next_node_height:
-                cost_to_move = current_height - next_node_height + 1
-            elif current_height < next_node_height:
-                cost_to_move = 2 * (next_node_height - current_height) + 1
+                next_node_2 = (x2 + movement_2[0], y2 + movement_2[1])
 
-            new_actions.append(movement[2])
-            new_history.append(next_node)
+                new_actions = actions[:]
+                new_history_1 = history_1[:]
+                new_history_2 = history_2[:]
 
-            new_node = Node(next_node, new_history[:], new_actions[:])
+                if not in_bounds(next_node_2, rows, cols):
+                    continue
 
-            new_node.t = current.t + 1
+                next_node_height_2 = abs(grid[next_node_2[0]][next_node_2[1]]) + ((t+1) % diff_height[next_node_2[0]][next_node_2[1]])
 
-            if movement == (0, 0, 0):
-                new_node.g = current.g + 1
-            else:
-                new_node.g = current.g + cost_to_move
-            new_node.h = calculate_heuristic(next_node, foods)
-            new_node.f = new_node.g + new_node.h
+                cost_to_move_1 = 1
+                cost_to_move_2 = 1
 
-            if is_valid(new_node, visited):
-                heappush(nodes, new_node)
+                if current_height_1 > next_node_height_1:
+                    cost_to_move_1 = current_height_1 - next_node_height_1 + 1
+                elif current_height_1 < next_node_height_1:
+                    cost_to_move_1 = 2 * (next_node_height_1 - current_height_1) + 1
+
+                if movement_1 == (0, 0, 0):
+                    cost_to_move_1 = 1
+
+                if current_height_2 > next_node_height_2:
+                    cost_to_move_2 = current_height_2 - next_node_height_2 + 1
+                elif current_height_2 < next_node_height_2:
+                    cost_to_move_2 = 2 * (next_node_height_2 - current_height_2) + 1
+
+                if movement_2 == (0, 0, 0):
+                    cost_to_move_2 = 1
+
+                cost_to_move = current.f + cost_to_move_1 + cost_to_move_2
+
+                new_actions.append((movement_1[2], movement_2[2]))
+                new_history_1.append(next_node_1)
+                new_history_2.append(next_node_2)
+
+                new_node = Node(next_node_1, next_node_2, new_history_1[:], new_history_2[:], new_actions[:], cost_to_move)
+                new_node.t = t + 1
+
+                if is_valid(new_node, visited):
+                    heappush(nodes, new_node)
 
     print("NIL")
 
@@ -144,17 +166,11 @@ def main():
         rows, cols = map(int, input().split())
         grid = [[int(cell) for cell in input().strip().split()] for _ in range(rows)]
         diff_height = [[int(cell) for cell in input().strip().split()] for _ in range(rows)]
-        source_x, source_y = map(int, input().split())
-        source = (source_x, source_y)
+        p1x, p1y, p2x, p2y = map(int, input().split())
+        player1 = (p1x, p1y)
+        player2 = (p2x, p2y)
 
-        foods = []
-
-        for row in range(rows):
-            for col in range(cols):
-                if grid[row][col] < 0:
-                    foods.append((row, col))
-
-        a_star_food(source, grid, diff_height, rows, cols, foods)
+        a_star_food(player1, player2, grid, diff_height, rows, cols)
 
 
 main()

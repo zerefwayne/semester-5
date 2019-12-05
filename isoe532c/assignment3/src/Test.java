@@ -379,13 +379,10 @@ public class Test {
 
     public static void main(String[] args) {
 
-        DBCon db = new DBCon();
-
-        Connection finalConn = DBCon.conn;
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI(finalConn);
+                createAndShowGUI();
             }
         });
 

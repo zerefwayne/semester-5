@@ -14,6 +14,4 @@ public class DBCon {
             e.printStackTrace();
         }
     }
-
-
 }

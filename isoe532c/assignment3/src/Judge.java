@@ -155,7 +155,7 @@ public class Judge {
 
     private static boolean checklogin(Connection finalConn, String id, String pass) throws SQLException {
 
-        PreparedStatement ret = finalConn.prepareStatement("SELECT judgeID from assignment3.judges where judgeID = ? AND pass = ?");
+        PreparedStatement ret = finalConn.prepareStatement("SELECT judgeID from assignment3.judges where judgeID = ? AND password = ?");
         ret.setString(1,id);
         ret.setString(2,pass);
 
